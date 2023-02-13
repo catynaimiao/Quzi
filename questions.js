@@ -19,5 +19,14 @@ const questions = [
       { id: "d", option: "Lion" },
     ],
   },
+  {
+    id: 3,
+    question: "What is your favorite animal?",
+    options: [
+      { id: "a", option: "Dog" },
+      { id: "b", option: "Cat" },
+      { id: "c", option: "Elephant" },
+      { id: "d", option: "Lion" },
+    ],
+  },
 ];
-const answers = ["a", "b"];

@@ -1,24 +1,32 @@
 import jwt from "jsonwebtoken";
-import User from "../../models/User";
+import User from "../../common/models/User";
+import dbConnect from "../../common/utils/dbConnect";
+import { SECRET } from "../../common/utils/config";
 import bcrypt from "bcrypt";
-import { SECRET } from "../../utils/config";
 
 export default async function handler(req, res) {
+  await dbConnect();
+  
   if (req.method === "POST") {
-    const { username, password } = req.body;
+    const { username, password } = JSON.parse(req.body);
     const existUser = await User.findOne({ username });
 
-    if (!existUser) res.status(401).json({ message: "账户名不存在" });
-
-    const passwordCorrect = await bcrypt.compare(password, existUser.passwordHash);
-
-    if (passwordCorrect) {
-      res.status(200).json({
-        token: jwt.sign({ username }, SECRET),
-        id: existUser.id,
-      });
+    if (!existUser) {
+      res.status(401).json({ message: "账户名不存在" });
     } else {
-      res.status(401).json({ message: "密码错误" });
+      const passwordCorrect = await bcrypt.compare(
+        password,
+        existUser.passwordHash,
+      );
+
+      if (passwordCorrect) {
+        res.status(200).json({
+          token: jwt.sign({ username }, SECRET),
+          id: existUser.id,
+        });
+      } else {
+        res.status(401).json({ message: "密码错误" });
+      }
     }
   }
 

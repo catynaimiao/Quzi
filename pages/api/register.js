@@ -1,8 +1,15 @@
-import User from "../../models/User";
+import User from "../../common/models/User";
 import bcrypt from "bcrypt";
+import dbConnect from "../../common/utils/dbConnect";
 
 export default async function handler(req, res) {
+  await dbConnect();
+
   const { username, name, password } = req.body;
+
+  if (!username || !name || !password) {
+    res.status(401).json({ error: "The request must have paylod" });
+  }
 
   if (password.length < 3) {
     res

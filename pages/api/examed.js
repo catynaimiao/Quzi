@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       if (error) {
         return res.status(403).send("Forbidden");
       }
-      res.status(201).json(req.body);
+      res.status(201).json(JSON.parse(req.body));
     });
   }
 }

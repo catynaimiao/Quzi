@@ -1,52 +1,48 @@
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import {
-  Button,
-  ButtonGroup,
-  Container,
-  Paper,
-  Typography,
-  Box,
-} from "@mui/material";
+import QuizForm from "../common/components/exam/QuizForm";
+import { useState } from "react";
 
 const Home = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const { username } = JSON.parse(localStorage.getItem("quizexam") || "{}");
-    setUser(username);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.clear();
-    setUser(null);
-  };
+  const [answer, setAnswer] = useState({});
+  const questions = [
+    {
+      id: 1,
+      question: "What is your favorite color?",
+      options: [
+        { id: "a", option: "Red" },
+        { id: "b", option: "Green" },
+        { id: "c", option: "Blue" },
+        { id: "d", option: "Yellow" },
+      ],
+    },
+    {
+      id: 2,
+      question: "What is your favorite animal?",
+      options: [
+        { id: "a", option: "Dog" },
+        { id: "b", option: "Cat" },
+        { id: "c", option: "Elephant" },
+        { id: "d", option: "Lion" },
+      ],
+    },
+    {
+      id: 3,
+      question: "What is your favorite animal?",
+      options: [
+        { id: "a", option: "Dog" },
+        { id: "b", option: "Cat" },
+        { id: "c", option: "Elephant" },
+        { id: "d", option: "Lion" },
+      ],
+    },
+  ];
 
   return (
-    <Container maxWidth='sm'>
-      <Paper elevation={3} sx={{ padding: 4 }}>
-        {user ? (
-          <Box>
-            <Typography variant='h5'>你好 {user}</Typography>
-            <ButtonGroup variant='contained' sx={{ mt: 2 }}>
-              <Button>
-                <Link href='/exam'>参加考试</Link>
-              </Button>
-              <Button onClick={handleLogout}>
-                退出登录
-              </Button>
-            </ButtonGroup>
-          </Box>
-        ) : (
-          <Box>
-            <Typography variant='h5'>请登录,来参加考试</Typography>
-            <Button sx={{ mt: 2 }} variant='contained' onClick={handleLogout}>
-              <Link href='/login'>登录</Link>
-            </Button>
-          </Box>
-        )}
-      </Paper>
-    </Container>
+    <QuizForm
+      questions={questions}
+      answer={answer}
+      setAnswer={setAnswer}
+      fold={true}
+    />
   );
 };
 
