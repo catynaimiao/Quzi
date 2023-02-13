@@ -1,5 +1,5 @@
 import {
-  Container,
+  Box,
   Typography,
   RadioGroup,
   FormControlLabel,
@@ -18,11 +18,9 @@ const QuizForm = ({ questions, answer, setAnswer, fold }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
 
-  console.log(answer);
-
   const handleOptionSelect = (event) => {
     setSelectedOption(event.target.value);
-    setAnswer({ ...answer, [currentQuestion]: event.target.value });
+    setAnswer({ ...answer, [currentQuestion + 1]: event.target.value });
   };
 
   const handleUnfoldOptionSelect = (id, value) => {
@@ -31,21 +29,21 @@ const QuizForm = ({ questions, answer, setAnswer, fold }) => {
 
   const handleNextQuestion = () => {
     setCurrentQuestion(currentQuestion + 1);
-    const option = answer[currentQuestion + 1] || "";
+    const option = answer[currentQuestion + 2] || "";
     setSelectedOption(option);
   };
 
   const handlePreQuestion = () => {
     setCurrentQuestion(currentQuestion - 1);
-    const option = answer[currentQuestion - 1] || "";
+    const option = answer[currentQuestion] || "";
     setSelectedOption(option);
   };
 
   if (fold) {
     return (
-      <Container maxWidth='sm'>
+      <Box maxWidth='sm'>
         <Typography variant='h5'>
-          选择题 {currentQuestion + 1} / {questions.length}
+          单选题 {currentQuestion + 1} / {questions.length}
         </Typography>
         <Typography variant='body1' component='p' gutterBottom>
           {questions[currentQuestion].question}
@@ -70,11 +68,11 @@ const QuizForm = ({ questions, answer, setAnswer, fold }) => {
             下一题
           </Button>
         </ButtonGroup>
-      </Container>
+      </Box>
     );
   } else {
     return (
-      <Container maxWidth='sm'>
+      <Box maxWidth='sm'>
         {questions.map((question, index) => {
           return (
             <div key={question.id}>
@@ -98,7 +96,7 @@ const QuizForm = ({ questions, answer, setAnswer, fold }) => {
             </div>
           );
         })}
-      </Container>
+      </Box>
     );
   }
 };

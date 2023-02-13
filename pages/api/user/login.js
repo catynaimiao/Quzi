@@ -1,14 +1,14 @@
 import jwt from "jsonwebtoken";
-import User from "../../common/models/User";
-import dbConnect from "../../common/utils/dbConnect";
-import { SECRET } from "../../common/utils/config";
+import User from "../../../common/models/User";
+import dbConnect from "../../../common/utils/dbConnect";
+import { SECRET } from "../../../common/utils/config";
 import bcrypt from "bcrypt";
 
 export default async function handler(req, res) {
   await dbConnect();
   
   if (req.method === "POST") {
-    const { username, password } = JSON.parse(req.body);
+    const { username, password } = req.body;
     const existUser = await User.findOne({ username });
 
     if (!existUser) {
