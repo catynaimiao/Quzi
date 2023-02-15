@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { TextField, Button, Box, Page, Stack, Alert } from "@mui/material";
 import axios from "axios";
+import Head from "next/head";
 import { set } from "mongoose";
 
 const containerStyle = { width: "100%", height: "80vh" };
@@ -64,6 +65,9 @@ const Login = () => {
 
   return (
     <Box component={Page} sx={containerStyle}>
+      <Head>
+        <title>注册账户</title>
+      </Head>
       <form noValidate autoComplete='off'>
         <Stack sx={formStyle} spacing={2}>
           <TextField

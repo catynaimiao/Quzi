@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { TextField, Button, Box, Page, Stack, Alert } from "@mui/material";
 import axios from "axios";
@@ -10,8 +10,18 @@ const formStyle = {
   width: "80%",
 };
 
+import Head from "next/head";
+
 const Login = () => {
   const router = useRouter();
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("quizexam"));
+    if (user) {
+      router.push("/dashboard");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [errormessage, setErrormessage] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,12 +29,15 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/user/login", { username, password });
+      const response = await axios.post("/api/user/login", {
+        username,
+        password,
+      });
       localStorage.setItem(
         "quizexam",
         JSON.stringify({ ...response.data, username }),
       );
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       const data = error.response.data;
       setErrormessage(data.message);
@@ -36,6 +49,9 @@ const Login = () => {
 
   return (
     <Box component={Page} sx={containerStyle}>
+      <Head>
+        <title>登录系统</title>
+      </Head>
       <form noValidate autoComplete='off'>
         <Stack sx={formStyle} spacing={2}>
           <TextField

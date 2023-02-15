@@ -10,6 +10,7 @@ const examedSchema = new mongoose.Schema({
     ref: "Exam",
   },
   answers: [String],
+  finishtime: Date,
   scores: String,
 });
 

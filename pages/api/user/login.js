@@ -6,9 +6,10 @@ import bcrypt from "bcrypt";
 
 export default async function handler(req, res) {
   await dbConnect();
-  
+
   if (req.method === "POST") {
     const { username, password } = req.body;
+    console.log(username);
     const existUser = await User.findOne({ username });
 
     if (!existUser) {
@@ -21,8 +22,8 @@ export default async function handler(req, res) {
 
       if (passwordCorrect) {
         res.status(200).json({
-          token: jwt.sign({ username }, SECRET),
-          id: existUser.id,
+          name: existUser.name,
+          token: jwt.sign({ username, id: existUser.id }, SECRET),
         });
       } else {
         res.status(401).json({ message: "密码错误" });
