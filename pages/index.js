@@ -1,12 +1,9 @@
 import { Typography, Stack, Box, Button } from "@mui/material";
 import Head from "next/head";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Link from 'next/link'
+import Link from "next/link";
 
 const theme = createTheme({
-  status: {
-    danger: "#e53e3e",
-  },
   palette: {
     primary: {
       main: "#122c34",
@@ -37,9 +34,14 @@ const Home = () => {
               内部考试考试系统
             </Typography>
             <Box>
-              <Link href='/dashboard'>
+              <Link href='/user/register'>
                 <Button variant='contained' size='large'>
-                  进入考试
+                  快速注册
+                </Button>
+              </Link>
+              <Link href='/user/login'>
+                <Button variant='contained' size='large' sx={{ ml: 1 }}>
+                  快速登录
                 </Button>
               </Link>
             </Box>

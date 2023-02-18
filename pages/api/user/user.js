@@ -1,8 +1,7 @@
-import User from "../../../common/models/User";
+import User from "../../../common/models/userAuth/User";
 import jwt from "jsonwebtoken";
 import { SECRET } from "../../../common/utils/config";
 import dbConnect from "../../../common/utils/dbConnect";
-import { EDGE_RUNTIME_WEBPACK } from "next/dist/shared/lib/constants";
 
 const UserCache = {};
 let cacheChange = false;

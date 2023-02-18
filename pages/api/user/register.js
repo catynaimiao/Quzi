@@ -1,4 +1,4 @@
-import User from "../../../common/models/User";
+import User from "../../../common/models/userAuth/User";
 import bcrypt from "bcrypt";
 import dbConnect from "../../../common/utils/dbConnect";
 

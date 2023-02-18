@@ -1,5 +1,3 @@
-import { execOnce } from "next/dist/shared/lib/utils";
-
 export const questions = [
   {
     id: 1,

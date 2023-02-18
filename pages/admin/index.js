@@ -5,16 +5,15 @@ import {
   Typography,
   Button,
   Toolbar,
-  Grid,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+
+import AllExams from "../../common/components/admin/AllExam";
 
 import Head from "next/head";
 import Link from "next/link";
 
-import ExamInfoCard from "../common/components/exam/ExamInfoCard";
-
-const Dashboard = () => {
+const Home = () => {
   const [user, setUser] = useState(null);
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("quizexam"));
@@ -30,7 +29,7 @@ const Dashboard = () => {
   return (
     <Box>
       <Head>
-        <title>{user ? `${user.name}的考试主页` : `考试系统`}</title>
+        <title>考试系统管理台</title>
       </Head>
       <AppBar
         position='static'
@@ -42,7 +41,7 @@ const Dashboard = () => {
         <Container>
           <Toolbar>
             <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-              QuizExam考试系统
+              QuziExam考试系统 管理台
             </Typography>
             {!user ? (
               <Link href='/user/login'>
@@ -61,10 +60,12 @@ const Dashboard = () => {
       <Container>
         <Box sx={{ p: 2, my: 2 }}>
           <Typography variant='body1'>
-            {user ? `您好,${user.name}。` : `您好,请登录考试系统。`}
+            {user && `您好,${user.name} 管理员。`}
           </Typography>
         </Box>
-        <Typography fontWeight={700}>你的所有考试</Typography>
+        <Typography fontWeight={700}>考试相关</Typography>
+        <AllExams />
+        <Typography fontWeight={700}>所有考生</Typography>
         <Box
           sx={{
             p: 2,
@@ -74,15 +75,11 @@ const Dashboard = () => {
             flexDirection: "row",
             flexWrap: "wrap",
           }}>
-          <ExamInfoCard />
-          <ExamInfoCard />
-          <ExamInfoCard />
-          <ExamInfoCard />
-          <ExamInfoCard />
+          haha
         </Box>
       </Container>
     </Box>
   );
 };
 
-export default Dashboard;
+export default Home;

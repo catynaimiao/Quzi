@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../../../common/models/User";
+import User from "../../../common/models/userAuth/User";
 import dbConnect from "../../../common/utils/dbConnect";
 import { SECRET } from "../../../common/utils/config";
 import bcrypt from "bcrypt";
