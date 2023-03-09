@@ -1,17 +1,10 @@
 import {
   Card,
   Box,
-  Avatar,
   Stack,
   Typography,
-  Divider,
   Chip,
-  Switch,
-  IconButton,
 } from "@mui/material";
-
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import { LocationOn, Edit } from "@mui/icons-material";
 
 const ExamInfoCard = ({ exam }) => (
   <Card sx={{ width: 275, m: 2, p: 2 }}>

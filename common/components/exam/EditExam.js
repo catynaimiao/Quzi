@@ -1,5 +1,12 @@
-import { Box, TextField, Stack } from "@mui/material";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import { Box, TextField, Stack, Button } from "@mui/material";
+
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid";
 import { questions } from "../../../questions";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -7,9 +14,17 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const question = questions.map((q) => ({ id: q.id, question: q.question }));
 
+const CustomToolbar = () => (
+  <GridToolbarContainer>
+    <GridToolbarColumnsButton />
+    <GridToolbarFilterButton />
+    <Button>添加试题</Button>
+  </GridToolbarContainer>
+);
+
 const EditExam = () => {
-  const handleAction = () => {
-    console.log("yes");
+  const handleAction = (event) => {
+    console.log(event);
   };
   const rows = question;
 
@@ -24,13 +39,13 @@ const EditExam = () => {
         // eslint-disable-next-line react/jsx-key
         <GridActionsCellItem
           icon={<DeleteIcon />}
-          onClick={handleAction(params.id)}
+          onClick={handleAction}
           label='Delete'
         />,
         // eslint-disable-next-line react/jsx-key
         <GridActionsCellItem
           icon={<EditIcon />}
-          onClick={handleAction(params.id)}
+          onClick={handleAction}
           label='Edit'
         />,
       ],
@@ -40,27 +55,29 @@ const EditExam = () => {
     <Box
       component='form'
       sx={{
-        "& .MuiTextField-root": { m: 1, width: "50ch" },
+        "& .MuiTextField-root": { m: 1, width: "100%" },
       }}
       noValidate
       autoComplete='off'>
-      <div>
-        <Stack>
-          <TextField required label='试卷名称' defaultValue='Hello World' />
-          <TextField required label='试卷类别' defaultValue='Hello World' />
-        </Stack>
-      </div>
-      <div>
-        <TextField
-          required
-          label='试卷描述'
-          multiline
-          rows={2}
-          defaultValue='Hello World'
+      <Stack direction='row' spacing={1}>
+        <Button variant='contained'>保存</Button>
+        <Button variant='contained' color='secondary'>
+          删除
+        </Button>
+      </Stack>
+      <Stack>
+        <TextField required type='text' label='试卷名称' />
+        <TextField required type='text' label='试卷类别' />
+        <TextField type='text' required label='试卷描述' multiline rows={2} />
+      </Stack>
+      <div style={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+          columns={columns}
         />
-      </div>
-      <div style={{ height: 400, width: 800 }}>
-        <DataGrid rows={rows} columns={columns} />
       </div>
     </Box>
   );

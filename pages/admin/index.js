@@ -7,11 +7,12 @@ import {
   Toolbar,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-
-import AllExams from "../../common/components/admin/AllExam";
+import MenuItemCard from "../../common/components/admin/MenuItemCard";
 
 import Head from "next/head";
 import Link from "next/link";
+
+const items = [{ title: "考试编辑", url: "/admin/editexam" }];
 
 const Home = () => {
   const [user, setUser] = useState(null);
@@ -63,9 +64,6 @@ const Home = () => {
             {user && `您好,${user.name} 管理员。`}
           </Typography>
         </Box>
-        <Typography fontWeight={700}>考试相关</Typography>
-        <AllExams />
-        <Typography fontWeight={700}>所有考生</Typography>
         <Box
           sx={{
             p: 2,
@@ -75,7 +73,9 @@ const Home = () => {
             flexDirection: "row",
             flexWrap: "wrap",
           }}>
-          haha
+          {items.map((item) => (
+            <MenuItemCard key={item.title} {...item} />
+          ))}
         </Box>
       </Container>
     </Box>
