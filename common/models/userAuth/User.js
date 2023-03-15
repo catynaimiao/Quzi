@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
   passwordHash: { type: String, required: true },
   name: { type: String, required: true, minLength: [2, "姓名最小长度为2"] },
   phone: { type: String, minLength: [11, "电话最小长度为 11位"] },
+  auth: {
+    type: mongoose.Types.ObjectId,
+    ref: "Auth",
+  },
 });
 
 userSchema.set("toJSON", {

@@ -9,7 +9,6 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     const { username, password } = req.body;
-    console.log(username);
     const existUser = await User.findOne({ username });
 
     if (!existUser) {
@@ -29,6 +28,7 @@ export default async function handler(req, res) {
         res.status(401).json({ message: "密码错误" });
       }
     }
+    res.status(403).json({ message: "出现问题" });
   }
 
   if (req.method === "GET") {

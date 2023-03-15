@@ -8,7 +8,7 @@ const examSchema = new mongoose.Schema({
     {
       id: String,
       question: String,
-      options: [{ id: String, option: String }],
+      options: [{ id: String, option: String, answer: String }],
     },
   ],
   answers: [String],

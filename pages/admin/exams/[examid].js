@@ -1,4 +1,4 @@
-import EditExam from "../../common/components/exam/EditExam";
+import EditExam from "../../../common/components/exam/EditExam";
 import { ThemeProvider } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 import {
@@ -9,16 +9,49 @@ import {
   Typography,
   Button,
 } from "@mui/material";
+
+import axios from "axios";
+
 import Head from "next/head";
 import Link from "next/link";
-import ADMIN_BASIC_THEME from "../../common/theme/admin/basic";
+import { useRouter } from "next/router";
+
+import ADMIN_BASIC_THEME from "../../../common/theme/admin/basic";
 
 const EditExamPage = () => {
+  const router = useRouter();
+  const { examid } = router.query;
+
+  const [paper, setPaper] = useState(null);
   const [user, setUser] = useState(null);
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("quizexam"));
-    setUser(user);
-  }, []);
+    if (examid) {
+      axios
+        .get(`/api/admin/exams/${examid}`, {
+          headers: {
+            Authorization: user.token,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          setPaper(response.data);
+        })
+        .catch((error) => {
+          alert(error.message);
+          router.push("/admin/exams", undefined, { shallow: true });
+        });
+      setUser(user);
+    }
+  }, [examid, router]);
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+    localStorage.clear();
+    setUser(null);
+  };
+
   return (
     <ThemeProvider theme={ADMIN_BASIC_THEME}>
       <Box>
@@ -56,7 +89,11 @@ const EditExamPage = () => {
         </AppBar>
         <Container>
           <Box sx={{ mt: 2 }}>
-            <EditExam />
+            {paper ? (
+              <EditExam paper={paper} user={user} />
+            ) : (
+              <Typography variant='body1'>加载中...</Typography>
+            )}
           </Box>
         </Container>
       </Box>

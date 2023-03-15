@@ -235,6 +235,7 @@ export const questions = [
     ],
   },
 ];
+
 export const anwsers = [
   "c",
   "c",

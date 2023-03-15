@@ -11,6 +11,8 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import Alert from "@mui/material/Alert";
+import Collapse from "@mui/material/Collapse";
 
 import { TextField, Box, Stack } from "@mui/material";
 
@@ -18,133 +20,152 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />;
 });
 
-export default function FullScreenDialog() {
-  const [open, setOpen] = React.useState(false);
+const EditPaperDialog = ({
+  open,
+  setOpen,
+  editItem,
+  setEditItem,
+  setQuestion,
+  question,
+}) => {
+  //const [open, setOpen] = React.useState(false);
   const [select, setSelect] = React.useState("a");
+  const [alertOpen, setAlertOpen] = React.useState(false);
 
-  const [questionName, setQuestionName] = React.useState("");
-  const [xuanxiang_1, setXuanxiang_1] = React.useState("");
-  const [xuanxiang_2, setXuanxiang_2] = React.useState("");
-  const [xuanxiang_3, setXuanxiang_3] = React.useState("");
-  const [xuanxiang_4, setXuanxiang_4] = React.useState("");
-
-  const handleChange = (event) => {
+  const handleChangeAnswer = (event) => {
+    setEditItem({ ...editItem, anwser: event.target.value });
     setSelect(event.target.value);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleSave = () => {
+    const newQuestion = question.map((item) => {
+      if (item.id === editItem.id) {
+        return editItem;
+      } else {
+        return item;
+      }
+    });
+    setAlertOpen(true);
+    setQuestion(newQuestion);
+    setTimeout(() => {
+      setAlertOpen(false);
+    }, 1500);
+  };
+
+  const hanldeChangeOption = (id, newOption) => {
+    const newOptions = [...editItem.options].map((option) => {
+      if (option.id === id) {
+        return { id, option: newOption };
+      } else {
+        return option;
+      }
+    });
+
+    setEditItem({ ...editItem, options: newOptions });
+  };
+
+  const handleChangeQuestion = (question) => {
+    setEditItem({ ...editItem, question });
   };
 
   const handleClose = () => {
     setOpen(false);
-    const question = {
-      name: questionName,
-      option1: xuanxiang_1,
-      Option2: xuanxiang_2,
-      option3: xuanxiang_3,
-      option4: xuanxiang_4,
-      answer: select,
-    };
-    console.log(question);
+    setAlertOpen(false);
   };
 
   return (
-    <div>
-      <Button variant='outlined' onClick={handleClickOpen}>
-        Open full-screen dialog
-      </Button>
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}>
-        <AppBar sx={{ position: "relative" }}>
-          <Toolbar>
+    <Dialog
+      fullScreen
+      open={open}
+      onClose={handleClose}
+      TransitionComponent={Transition}>
+      <AppBar sx={{ position: "relative" }}>
+        <Toolbar>
+          <IconButton
+            edge='start'
+            color='inherit'
+            onClick={handleClose}
+            aria-label='close'>
+            <CloseIcon />
+          </IconButton>
+          <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
+            题目编辑{" > "}题目{editItem.id}
+          </Typography>
+          <Button autoFocus color='inherit' onClick={handleSave}>
+            保存更改
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Collapse in={alertOpen}>
+        <Alert
+          action={
             <IconButton
-              edge='start'
+              aria-label='close'
               color='inherit'
-              onClick={handleClose}
-              aria-label='close'>
-              <CloseIcon />
+              size='small'
+              onClick={() => {
+                setAlertOpen(false);
+              }}>
+              <CloseIcon fontSize='inherit' />
             </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
-              题目编辑
-            </Typography>
-            <Button autoFocus color='inherit' onClick={handleClose}>
-              保存更改
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <form>
-          <Box sx={{ p: 4, display: "flex", gap: 2, flexDirection: "column" }}>
+          }
+          sx={{ mb: 2 }}>
+          保存成功!
+        </Alert>
+      </Collapse>
+      <form>
+        <Box sx={{ p: 4, display: "flex", gap: 2, flexDirection: "column" }}>
+          <TextField
+            autoFocus
+            label='题目名称'
+            variant='outlined'
+            value={editItem.question}
+            onChange={(event) => {
+              handleChangeQuestion(event.target.value);
+            }}
+          />
+          <Stack direction='row' spacing={2}>
             <TextField
-              autoFocus
-              label='题目名称'
+              label='题目类别'
+              disabled
               variant='outlined'
-              value={questionName}
-              onChange={(event) => {
-                setQuestionName(event.target.value);
-              }}
+              defaultValue='quiz'
+              sx={{ width: "40%" }}
             />
-            <Stack direction='row' spacing={2}>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>正确答案</InputLabel>
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={select}
+                label='正确答案'
+                onChange={handleChangeAnswer}>
+                {editItem.options.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    选项{option.id}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
+          {editItem.options.map((option) => {
+            return (
               <TextField
-                label='题目类别'
-                disabled
+                label={`选项${option.id}`}
+                key={option.id}
+                multiline
                 variant='outlined'
-                defaultValue='quiz'
-                sx={{ width: "40%" }}
+                value={option.option}
+                onChange={(event) => {
+                  hanldeChangeOption(option.id, event.target.value);
+                }}
               />
-              <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-label'>正确答案</InputLabel>
-                <Select
-                  labelId='demo-simple-select-label'
-                  id='demo-simple-select'
-                  value={select}
-                  label='正确答案'
-                  onChange={handleChange}>
-                  <MenuItem value='a'>选项1</MenuItem>
-                  <MenuItem value='b'>选项2</MenuItem>
-                  <MenuItem value='c'>选项3</MenuItem>
-                  <MenuItem value='d'>选项4</MenuItem>
-                </Select>
-              </FormControl>
-            </Stack>
-            <TextField
-              label='选项1'
-              variant='outlined'
-              value={xuanxiang_1}
-              onChange={(event) => {
-                setXuanxiang_1(event.target.value);
-              }}
-            />
-            <TextField
-              label='选项2'
-              variant='outlined'
-              value={xuanxiang_2}
-              onChange={(event) => {
-                setXuanxiang_2(event.target.value);
-              }}
-            />
-            <TextField
-              label='选项3'
-              variant='outlined'
-              value={xuanxiang_3}
-              onChange={(event) => {
-                setXuanxiang_3(event.target.value);
-              }}
-            />
-            <TextField
-              label='选项4'
-              variant='outlined'
-              value={xuanxiang_4}
-              onChange={(event) => {
-                setXuanxiang_4(event.target.value);
-              }}
-            />
-          </Box>
-        </form>
-      </Dialog>
-    </div>
+            );
+          })}
+        </Box>
+      </form>
+    </Dialog>
   );
-}
+};
+
+export default EditPaperDialog;

@@ -4,16 +4,20 @@ const paperSchema = new mongoose.Schema({
   title: String,
   imageUrl: String,
   category: String,
-  description: String,
   questions: [
     {
       id: String,
-      type: String,
+      questiontype: String,
       question: String,
       options: [{ id: String, option: String }],
       answer: String,
     },
   ],
+  description: String,
+  editor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 paperSchema.set("toJSON", {

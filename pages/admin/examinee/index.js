@@ -6,28 +6,30 @@ import {
   Button,
   Toolbar,
 } from "@mui/material";
+
 import { useEffect, useState } from "react";
-
-import MenuItemCard from "../../common/components/admin/MenuItemCard";
-
-import ArticleIcon from "@mui/icons-material/Article";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import EditIcon from "@mui/icons-material/Edit";
 
 import Head from "next/head";
 import Link from "next/link";
-
-const items = [
-  { title: "考试编辑", url: "/admin/exams", Icon: ArticleIcon },
-  { title: "考试安排", url: "/", Icon: AssignmentIcon },
-  { title: "考生编辑", url: "/", Icon: EditIcon },
-];
+import axios from "axios";
 
 const Home = () => {
   const [user, setUser] = useState(null);
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("quizexam"));
     setUser(user);
+
+    axios
+      .get(`/api/admin/examinee`, {
+        headers: {
+          Authorization: user.token,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+      });
   }, []);
 
   const handleLogout = (event) => {
@@ -39,7 +41,7 @@ const Home = () => {
   return (
     <Box>
       <Head>
-        <title>考试系统管理台</title>
+        <title>考试系统管理台 考生管理</title>
       </Head>
       <AppBar
         position='static'
@@ -51,7 +53,7 @@ const Home = () => {
         <Container>
           <Toolbar>
             <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-              QuziExam考试系统 管理台
+              QuziExam考试系统 考生管理
             </Typography>
             {!user ? (
               <Link href='/user/login'>
@@ -81,11 +83,7 @@ const Home = () => {
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
-          }}>
-          {items.map((item) => (
-            <MenuItemCard key={item.title} {...item} />
-          ))}
-        </Box>
+          }}></Box>
       </Container>
     </Box>
   );

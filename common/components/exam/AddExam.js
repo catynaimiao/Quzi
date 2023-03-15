@@ -16,6 +16,7 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 
 import Link from "next/link";
 import EditPaperDialog from "../../components/exam/EditPaperDialog";
+import { useRouter } from "next/router";
 import axios from "axios";
 
 const CustomToolbar = () => {
@@ -27,20 +28,16 @@ const CustomToolbar = () => {
   );
 };
 
-const EditExam = ({ paper, user }) => {
+const AddExam = ({ user }) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState([]);
   const [editItem, setEditItem] = useState(null);
 
-  const [title, setTitle] = useState(paper.title);
-  const [category, setCategory] = useState(paper.category);
-  const [description, setDescription] = useState(paper.description);
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
   const [question, setQuestion] = useState([]);
-
-  // 拉取问题
-  useEffect(() => {
-    setQuestion(paper.questions);
-  }, [paper]);
 
   useEffect(() => {
     const rows = question.map((q) => ({ id: q.id, question: q.question }));
@@ -60,18 +57,17 @@ const EditExam = ({ paper, user }) => {
       title,
       questions: question,
     };
-
-    axios({
-      method: "PUT",
-      url: `/api/admin/exams/${paper.id}`,
-      data: newPaper,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: user.token,
-      },
-    }).then((response) => {
-      alert("保存完成");
-    });
+    axios
+      .post("/api/admin/exams", newPaper, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: user.token,
+        },
+      })
+      .then(() => {
+        alert("创建成功");
+        router.push("/admin/exams", undefined, { shallow: true });
+      });
   };
 
   const handleAdd = () => {
@@ -137,12 +133,8 @@ const EditExam = ({ paper, user }) => {
       <Stack direction='row' spacing={1}>
         <Button variant='contained' type='submit'>
           <SaveIcon />
-          保存试题
+          增加试题
         </Button>
-        <Button variant='contained' color='warning'>
-          <DeleteIcon />
-          删除试题
-        </Button>{" "}
         <Button variant='contained' color='success' onClick={handleAdd}>
           <AddBoxIcon />
           添加问题
@@ -159,7 +151,7 @@ const EditExam = ({ paper, user }) => {
           required
           type='text'
           label='试卷名称'
-          defaultValue={paper.title}
+          defaultValue={title}
           onChange={(event) => {
             setTitle(event.target.value);
           }}
@@ -168,7 +160,7 @@ const EditExam = ({ paper, user }) => {
           required
           type='text'
           label='试卷分类'
-          defaultValue={paper.category}
+          defaultValue={category}
           onChange={(event) => {
             setCategory(event.target.value);
           }}
@@ -177,7 +169,7 @@ const EditExam = ({ paper, user }) => {
           type='text'
           required
           label='试卷描述'
-          defaultValue={paper.description}
+          defaultValue={description}
           multiline
           rows={2}
           onChange={(event) => {
@@ -208,4 +200,4 @@ const EditExam = ({ paper, user }) => {
   );
 };
 
-export default EditExam;
+export default AddExam;
