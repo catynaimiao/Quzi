@@ -5,6 +5,7 @@ import {
   Typography,
   Button,
   Toolbar,
+  Chip,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
@@ -15,21 +16,24 @@ import axios from "axios";
 
 const Home = () => {
   const [user, setUser] = useState(null);
+  const [examinees, setExaminees] = useState([]);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("quizexam"));
     setUser(user);
 
-    axios
-      .get(`/api/admin/examinee`, {
-        headers: {
-          Authorization: user.token,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        console.log(response);
-      });
+    if (user) {
+      axios
+        .get(`/api/admin/examinee`, {
+          headers: {
+            Authorization: user.token,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          setExaminees(response.data);
+        });
+    }
   }, []);
 
   const handleLogout = (event) => {
@@ -83,7 +87,16 @@ const Home = () => {
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
-          }}></Box>
+          }}>
+          {examinees.map((examinee) => (
+            <Box key={examinee.id}>
+              <Typography variant='h4'>
+                {examinee.name} <Chip label={examinee.auth || "User"} />
+              </Typography>
+              <Typography variant='body2'>{examinee.phone}</Typography>
+            </Box>
+          ))}
+        </Box>
       </Container>
     </Box>
   );
