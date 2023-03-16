@@ -51,6 +51,7 @@ const PapersList = ({ setPapers, papers, user }) => {
       <List>
         {papers.map((paper) => (
           <ListItem
+            sx={{ boxShadow: 1, borderRadius: 2 }}
             key={paper.title}
             secondaryAction={
               <Stack direction='row' spacing={2}>
@@ -161,7 +162,6 @@ const Home = () => {
           sx={{
             p: 2,
             my: 2,
-            border: "1px solid black",
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",

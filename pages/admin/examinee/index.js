@@ -14,6 +14,43 @@ import Head from "next/head";
 import Link from "next/link";
 import axios from "axios";
 
+const ExamineeCard = ({ examinee }) => {
+  return (
+    <Box
+      sx={{
+        bgcolor: "background.paper",
+        boxShadow: 1,
+        borderRadius: 2,
+        p: 2,
+        minWidth: 300,
+      }}>
+      <Typography variant='h4'>
+        {examinee.name}{" "}
+        <Chip
+          size='small'
+          variant='outlined'
+          color='primary'
+          label={examinee.auth || "User"}
+        />
+      </Typography>
+
+      <Typography variant='body2'>
+        <Box
+          sx={{
+            color: "success.dark",
+            display: "inline",
+            fontWeight: "bold",
+            mx: 0.5,
+            fontSize: 14,
+          }}>
+          Tel
+        </Box>
+        {examinee.phone}
+      </Typography>
+    </Box>
+  );
+};
+
 const Home = () => {
   const [user, setUser] = useState(null);
   const [examinees, setExaminees] = useState([]);
@@ -83,18 +120,12 @@ const Home = () => {
           sx={{
             p: 2,
             my: 2,
-            border: "1px solid black",
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
           }}>
           {examinees.map((examinee) => (
-            <Box key={examinee.id}>
-              <Typography variant='h4'>
-                {examinee.name} <Chip label={examinee.auth || "User"} />
-              </Typography>
-              <Typography variant='body2'>{examinee.phone}</Typography>
-            </Box>
+            <ExamineeCard key={examinee.id} examinee={examinee} />
           ))}
         </Box>
       </Container>

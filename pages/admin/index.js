@@ -19,8 +19,8 @@ import Link from "next/link";
 
 const items = [
   { title: "考试编辑", url: "/admin/exams", Icon: ArticleIcon },
-  { title: "考试安排", url: "/", Icon: AssignmentIcon },
-  { title: "考生编辑", url: "/", Icon: EditIcon },
+  { title: "考试安排", url: "/admin/examinee", Icon: AssignmentIcon },
+  { title: "考生编辑", url: "/admin/examinee", Icon: EditIcon },
 ];
 
 const Home = () => {
@@ -77,7 +77,6 @@ const Home = () => {
           sx={{
             p: 2,
             my: 2,
-            border: "1px solid black",
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
