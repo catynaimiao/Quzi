@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 
 const authSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-  },
+  users: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   authHash: String,
   groupHash: String,
 });
