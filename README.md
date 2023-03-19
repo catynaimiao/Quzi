@@ -1,6 +1,6 @@
 # quziExam
 
-这个项目是通过 chatGpt 生成的代码拼合而成的应用；
+一个简单的使用nextjs制作的考试系统
 
 
 ## Chatgpt 使用句柄
