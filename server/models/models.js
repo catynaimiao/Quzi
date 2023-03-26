@@ -41,12 +41,13 @@ const UserSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    power: { type: Number },
     exams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Exam" }], // 用户参加的考试
   },
   { timestamps: true },
 );
 
-export const Exam = mongoose.model("Exam", ExamSchema) || mongoose.models.Exam;
+export const Exam = mongoose.models.Exam || mongoose.model("Exam", ExamSchema);
 export const Question =
-  mongoose.model("Question", QuestionSchema) || mongoose.models.Question;
-export const User = mongoose.model("User", UserSchema) || mongoose.models.User;
+  mongoose.models.Question || mongoose.model("Question", QuestionSchema);
+export const User = mongoose.models.User || mongoose.model("User", UserSchema);

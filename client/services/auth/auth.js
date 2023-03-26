@@ -1,39 +1,36 @@
 import axios from "axios";
+import { useEffect, useState } from "react";
 // 未来 全局配置变量
 const BASE_URL = "http://localhost:3001/api/v1/auth"; // api Request URI
 
-// auth 私有全局变量
-let TOKEN = null; // 用户 Bearer Token
-let UserInfo = {}; // 用户 个人信息
-let UserPageAccessList = []; //用户 页面权限
+export const useAuth = () => {
+  const [user, setUser] = useState(undefined);
+  useEffect(() => {
+    const { user } = localAuth();
+    setUser(user);
+  }, []);
+  return { user };
+};
 
-let _log_state = false;
-//
+export const localAuth = () => {
+  if (typeof window !== "undefined") {
+    const localAuth = JSON.parse(localStorage.getItem("auth"));
+    return localAuth;
+  }
+  return false;
+};
 
-export const hasLogged = () => {
-  return _log_state;
-}; //登录状态
-
-export const login = () => {
-  _log_state = true;
+export const login = (auth) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("auth", JSON.stringify(auth));
+  }
 };
 
 export const logout = () => {
-  _log_state = false;
+  if (typeof window !== "undefined") {
+    localStorage.clear();
+  }
 };
-
-// 设置 bearer Token
-export const setToken = (token) => {
-  TOKEN = token;
-};
-
-// 获取 bearer Token
-export const getToken = () => {
-  return TOKEN;
-};
-
-// 返回 用户信息
-export const getUserInfo = () => {};
 
 /**
  * 返回 用户页面权限
@@ -41,9 +38,7 @@ export const getUserInfo = () => {};
  * @returns
  */
 export const getUserPageAccess = (pageRoute) => {
-  return UserPageAccessList.find(
-    (pageAccessDetail) => pageAccessDetail.route === pageRoute,
-  );
+  /** */
 };
 
 // 登录 service
@@ -73,7 +68,7 @@ export const loginService = async (email, password) => {
 };
 
 // 注册 service
-export const register = async (name, email, password) => {
+export const registerService = async (name, email, password) => {
   try {
     const response = await axios.post(BASE_URL, {
       action: "register",
