@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { questionService } from "../../../services/exams/exam";
-
-//beautiful tailwindcss react exam card code
+import { questionService } from "../../../../services/exams/exam";
+import Image from "next/image";
+import nothing from "../../../../../assets/images/nothing.png";
 const ExamCard = ({ exam }) => {
   return (
-    <div className='group/item  relative flex h-32 w-72  flex-col justify-between rounded-lg border-2 border-gray-200 bg-white p-4 shadow-lg hover:bg-primary-50'>
+    <div className='group/item  relative flex h-32 w-72  flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-lg hover:bg-primary-50'>
       <div className='absolute left-0 top-0 z-10 hidden h-32 w-72 items-center justify-center rounded-lg bg-primary-100 opacity-80 group-hover/item:flex'>
         <button className='group/button rounded px-6 py-2 text-2xl hover:border-2 hover:border-primary-600 hover:font-bold'>
           参加考试
@@ -187,16 +187,25 @@ const useExams = () => {
 };
 
 const ExamsList = ({ user }) => {
-  const exams = useExams(); //mockExams;
+  const exams = useExams(); //
+  //const exams = mockExams;
   return (
-    <div className='container mx-auto mt-4 h-[400px] md:h-[600px]'>
-      {!exams.length && (<>没有信息</>)}
-      <div className='flex flex-row flex-wrap gap-4 overflow-hidden'>
-        {exams.map((exam) => (
-          <ExamCard key={exam.id} exam={exam} state={2} />
-        ))}
-      </div>
-    </div>
+    <>
+      {!exams.length ? (
+        <div className='flex h-full mt-2 w-full flex-col items-center justify-center p-4'>
+          <div className='max-h-[200px] max-w-[200px]'>
+            <Image src={nothing} alt='nothing' />
+          </div>
+          <div className='text-primary-500 font-bold text-2xl tracking-wider subpixel-antialiased font-serif '>目前没有考试</div>
+        </div>
+      ) : (
+        <div className='flex flex-row flex-wrap gap-4 pt-4 overflow-hidden'>
+          {exams.map((exam) => (
+            <ExamCard key={exam.id} exam={exam} state={2} />
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 

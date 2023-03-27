@@ -14,12 +14,12 @@ const TimgBase = ({ imagSrc, title, subtitle, user = undefined }) => {
             alt='Picture of the author'
           />
           <div className='absolute bottom-[40px] left-[40px] border-l-2 border-white pl-4 transition-all duration-300 group-hover:left-[80px] group-hover:pl-6 '>
-            <h1 className=' font-sans text-4xl font-bold tracking-tight text-gray-50 drop-shadow-lg'>
-              {title}
-            </h1>
             <h2 className='font-sans text-2xl font-bold tracking-tight text-gray-100 drop-shadow-lg'>
               {subtitle}
             </h2>
+            <h1 className=' font-sans text-4xl font-bold tracking-tight text-gray-50 drop-shadow-lg'>
+              {title}
+            </h1>
           </div>
         </div>
         <div className='relative col-span-6 h-[400px]  lg:col-span-2 '>

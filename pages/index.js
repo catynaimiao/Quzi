@@ -1,7 +1,6 @@
 import Head from "next/head";
 import TopBanner from "../client/components/global/TopBanner";
 import TimgBase from "../client/components/pages/home/TimgBase";
-import ExamsList from "../client/components/pages/home/ExamsList";
 import timg from "../assets/images/timg.avif";
 import { localAuth } from "../client/services/auth/auth";
 import { useEffect, useState } from "react";
@@ -32,7 +31,6 @@ const Home = () => {
         subtitle='这个系统很牛逼,全球第一牛逼'
         user={user}
       />
-      <ExamsList />
     </>
   );
 };

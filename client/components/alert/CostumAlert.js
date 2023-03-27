@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, AlertTitle } from "@mui/material";
+import PropTypes from "prop-types";
 
 const CostumAlert = ({ message, success, onClose }) => {
   const [open, setOpen] = useState(true);
@@ -19,6 +20,12 @@ const CostumAlert = ({ message, success, onClose }) => {
       </Alert>
     )
   );
+};
+
+CostumAlert.prototype = {
+  message: PropTypes.string.isRequired,
+  success: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
 };
 
 export default CostumAlert;
