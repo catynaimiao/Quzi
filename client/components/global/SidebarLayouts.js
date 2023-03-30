@@ -8,7 +8,7 @@ const SidebarLayout = ({ children, Sidebar }) => {
       <div className='grid grid-cols-6 gap-4'>
         <div className='col-span-1 overflow-hidden'>{Sidebar}</div>
         <div className='col-span-5 '>
-          <div className='flex rounded w-fullmin-h-[300px]'>{children}</div>
+          <div className='flex rounded w-full min-h-[300px] px-4'>{children}</div>
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ const UserView = () => {
       <Head>
         <title>参加考试</title>
       </Head>
-      <TopBanner links={ActiveLink("DashBoard")} title={"仪表盘菜单"} />
+      <TopBanner links={ActiveLink("DashBoard")} title={"个人仪表盘"} />
       <SidebarLayout Sidebar={<SliderList list={SelectedSliderList(3)} />}>
         <ExamsList user={user} />
       </SidebarLayout>

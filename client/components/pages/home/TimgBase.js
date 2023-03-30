@@ -23,8 +23,8 @@ const TimgBase = ({ imagSrc, title, subtitle, user = undefined }) => {
           </div>
         </div>
         <div className='relative col-span-6 h-[400px]  lg:col-span-2 '>
-          <div className='group flex h-[280px] items-center rounded-t-md border-b-2 border-gray-50 bg-primary-200'>
-            <Link href={user?.name ? "/dashboard" : "/user/signin"}>
+          <div className='group flex h-[280px] items-center rounded-t-md border-b-2 border-gray-50 bg-primary-400 text-gray-50'>
+            <Link href={user?.name ? "/dashboard/exams" : "/user/signin"}>
               <p className='font-mono ml-8 text-4xl font-bold tracking-wider drop-shadow-md '>
                 {user?.name ? `参加考试` : "快速登录"}
                 <span className='ml-4 transition-all duration-300 group-hover:ml-8'>
@@ -33,7 +33,7 @@ const TimgBase = ({ imagSrc, title, subtitle, user = undefined }) => {
               </p>
             </Link>
           </div>
-          <div className='flex h-[120px] items-center rounded-b-md bg-primary-200 hover:bg-primary-100'>
+          <div className='flex h-[120px] items-center rounded-b-md text-gray-100 bg-primary-400 hover:bg-primary-300'>
             <p className='font-mono ml-8 text-lg tracking-wide drop-shadow-md'>
               {user?.name ? (
                 <>

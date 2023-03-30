@@ -4,13 +4,7 @@ import TimgBase from "../client/components/pages/home/TimgBase";
 import timg from "../assets/images/timg.avif";
 import { localAuth } from "../client/services/auth/auth";
 import { useEffect, useState } from "react";
-
-const links = [
-  { href: "#", name: "Home", actived: true },
-  { href: "/dashboard", name: "DashBoard" },
-  { href: "#", name: "Services" },
-  { href: "#", name: "Contact Us" },
-];
+import { ActiveLink } from "../client/configs/navs";
 
 const Home = () => {
   const [user, setUser] = useState(undefined);
@@ -24,7 +18,7 @@ const Home = () => {
       <Head>
         <title>QuziExam 考试系统</title>
       </Head>
-      <TopBanner links={links} title={"考试系统"} />
+      <TopBanner links={ActiveLink("Home")} title={"考试系统"} />
       <TimgBase
         imagSrc={timg}
         title='考试系统'

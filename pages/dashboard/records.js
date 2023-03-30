@@ -11,7 +11,7 @@ const UserView = () => {
       <Head>
         <title>考试记录</title>
       </Head>
-      <TopBanner links={ActiveLink("DashBoard")} title={"仪表盘菜单"} />
+      <TopBanner links={ActiveLink("DashBoard")} title={"个人仪表盘"} />
       <SidebarLayout Sidebar={<SliderList list={SelectedSliderList(2)} />}>
         <div className='flex flex-col'>
           <h1>你好</h1>
