@@ -1,0 +1,37 @@
+# Get all questions
+GET http://localhost:3000/api/v1/questions
+
+# Create a new question
+POST http://localhost:3000/api/v1/questions
+Content-Type: application/json
+
+{
+  "id": "q1",
+  "name": "Question 1",
+  "options": [
+    { "id": 1, "content": "Option 1", "isCorrect": false },
+    { "id": 2, "content": "Option 2", "isCorrect": true }
+  ],
+  "category": "category1",
+  "creator": "user1",
+  "modifier": "user1"
+}
+
+# Update an existing question
+PUT http://localhost:3000/api/v1/questions
+Content-Type: application/json
+
+{
+  "id": "q1",
+  "name": "Updated question 1",
+  "options": [
+    { "id": 1, "content": "Updated option 1", "isCorrect": false },
+    { "id": 2, "content": "Updated option 2", "isCorrect": true }
+  ],
+  "category": "category2",
+  "creator": "user1",
+  "modifier": "user2"
+}
+
+# Delete an existing question
+DELETE http://localhost:3000/api/v1/questions?q=q1
