@@ -1,4 +1,5 @@
 import TopBanner from "../../../client/components/global/TopBanner";
+import useSWR from "swr";
 import { ActiveLink } from "../../../client/configs/navs";
 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -279,13 +280,6 @@ const QuestionEdit = ({ question }) => {
 const Main = ({}) => {
   const [show, setShow] = useState(true);
 
-  const setShowTrue = () => {
-    setShow(true);
-  };
-  const setShowFalse = () => {
-    setShow(false);
-  };
-
   const toggleShow = () => {
     setShow(!show);
   };
@@ -305,6 +299,10 @@ const Main = ({}) => {
 };
 
 const QuestionsView = () => {
+  const fetcher = (...args) => fetch(...args).then((res) => res.json());
+  const { data, error, isLoading } = useSWR("/api/v1/questions", fetcher);
+  console.log(data)
+
   return (
     <div>
       <TopBanner links={ActiveLink("Admin")} title='题库管理' />

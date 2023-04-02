@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Question from "../../../server/v1/models/Question";
+import { Question } from "../../../server/models/models";
 
 mongoose
   .connect(process.env.MONGO_DEV_URI, {
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
     // Delete an existing question
     const { id } = req.query;
     try {
-      const result = await Question.deleteOne({ id });
+      const result = await Question.findByIdAndDelete(id);
       if (result.deletedCount === 0) {
         return res.status(404).json({ message: "Question not found" });
       }
@@ -69,4 +69,4 @@ export default async function handler(req, res) {
   } else {
     res.status(405).json({ message: "Method not allowed" });
   }
-} 
+}

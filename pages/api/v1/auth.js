@@ -1,4 +1,4 @@
-// pages/api/auth.js
+// pages/api/v1/auth.js
 import dbConnect from "../../../server/utils/dbConnect";
 
 import {
