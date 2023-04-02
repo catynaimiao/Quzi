@@ -83,8 +83,13 @@ module.exports = {
         "Noto Color Emoji",
       ],
     },
-    backgroundImage: {
-    },
+    backgroundImage: {},
   },
-  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
+  plugins: [
+    require("@tailwindcss/forms")({
+      strategy: "base", // only generate global styles
+      strategy: "class", // only generate classes
+    }),
+    require("@tailwindcss/typography"),
+  ],
 };
