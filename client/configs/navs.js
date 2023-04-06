@@ -86,7 +86,7 @@ const links = [
   { href: "/", name: "Home" },
   { href: "/dashboard/exams", name: "DashBoard" },
   { href: "/portal", name: "Admin" },
-  { href: "#", name: "About Us" },
+  { href: "/", name: "About Us" },
 ];
 
 export const ActiveLink = (selected) => {

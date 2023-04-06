@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { questionService } from "../../../../services/exams/exam";
 import Image from "next/image";
 import nothing from "../../../../../assets/images/nothing.png";
 const ExamCard = ({ exam }) => {
@@ -178,7 +177,7 @@ const useExams = () => {
   const [exams, setExams] = useState([]);
   useEffect(() => {
     const fetchExams = async () => {
-      const data = await questionService.getQuestions();
+      const data = mockExams //await questionService.getQuestions();
       setExams(data);
     };
     fetchExams();
