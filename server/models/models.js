@@ -51,3 +51,23 @@ questionSchema.path("options").validate((value) => {
 // Export model for Nextjs compatibility
 export const Question =
   mongoose.models.Question || mongoose.model("Question", questionSchema);
+
+// 试卷模式
+const paperSchema = new Schema(
+  {
+    name: { type: String, required: true, maxlength: 30 }, // 试卷名称
+    category: { type: String }, // 试卷分类
+    questions: [{ type: Schema.Types.ObjectId, ref: "Question" }], // 试卷包含的题目
+    creator: { type: Schema.Types.ObjectId, ref: "User", required: true }, // 试卷的创建者
+    modifier: { type: Schema.Types.ObjectId, ref: "User", required: true }, // 试卷的修改者
+    participants: [{ type: Schema.Types.ObjectId, ref: "User" }], // 参加试卷的用户
+    duration: { type: Number }, // 试卷时长（分钟）
+    startTime: { type: Date }, // 试卷开始时间
+    endTime: { type: Date }, // 试卷结束时间
+    status: { type: String }, // 试卷状态（已发布、未发布、已结束等）
+  },
+  { timestamps: true },
+);
+
+export const Paper =
+  mongoose.models.Paper || mongoose.model("Paper", paperSchema);

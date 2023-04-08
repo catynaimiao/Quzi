@@ -1,14 +1,6 @@
-import mongoose from "mongoose";
+import { connectToDatabase } from "../../../server/utils/dbConnect";
 import { Question, User } from "../../../server/models/models";
 import jwt from "jsonwebtoken";
-
-mongoose
-  .connect(process.env.MONGO_DEV_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
 
 // beartoken parse and auth in nextjs
 const tokenparse = async (req, res) => {
@@ -24,12 +16,13 @@ const tokenparse = async (req, res) => {
 };
 
 export default async function handler(req, res) {
+  await connectToDatabase();
   const user = await tokenparse(req, res);
-
   if (!user) {
     return res.status(401).json({ message: "Not authorized" });
   }
 
+  console.log(user)
   const ExistedUser = await User.findOne({ id: user.id });
   if (!ExistedUser) {
     return res.status(401).json({ message: "Not authorized" });
@@ -82,7 +75,6 @@ export default async function handler(req, res) {
     const { id } = req.query;
     try {
       const result = await Question.findByIdAndDelete(id);
-      console.log(result,id)
       if (result.deletedCount === 0) {
         return res.status(404).json({ message: "Question not found" });
       }
