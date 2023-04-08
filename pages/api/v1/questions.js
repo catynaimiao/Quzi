@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { Question } from "../../../server/models/models";
+import { Question, User } from "../../../server/models/models";
+import jwt from "jsonwebtoken";
 
 mongoose
   .connect(process.env.MONGO_DEV_URI, {
@@ -9,21 +10,45 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
+// beartoken parse and auth in nextjs
+const tokenparse = async (req, res) => {
+  const { authorization } = req.headers;
+  if (authorization) {
+    const token = authorization.split(" ")[1];
+    if (token) {
+      const user = jwt.verify(token, process.env.JWT_SECRET);
+      return user;
+    }
+  }
+  return null;
+};
+
 export default async function handler(req, res) {
+  const user = await tokenparse(req, res);
+
+  if (!user) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
+
+  const ExistedUser = await User.findOne({ id: user.id });
+  if (!ExistedUser) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
+
   if (req.method === "GET") {
     // Get all questions
     const questions = await Question.find().populate("creator modifier");
     res.status(200).json({ questions });
   } else if (req.method === "POST") {
     // Create a new question
-    const { id, name, options, category, creator, modifier } = req.body;
+    const { id, name, options, category } = req.body;
     const question = new Question({
       id,
       name,
       options,
       category,
-      creator,
-      modifier,
+      creator: user.id,
+      modifier: user.id,
     });
     try {
       const result = await question.save();
@@ -35,7 +60,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "PUT") {
     // Update an existing question
-    const { id, name, options, category, creator, modifier } = req.body;
+    const { id, name, options, category } = req.body;
     try {
       const question = await Question.findOne({ id });
       if (!question) {
@@ -44,7 +69,7 @@ export default async function handler(req, res) {
       question.name = name;
       question.options = options;
       question.category = category;
-      question.modifier = modifier;
+      question.modifier = user.id;
       const result = await question.save();
       res.status(200).json({ message: "Question updated", question: result });
     } catch (err) {
@@ -57,6 +82,7 @@ export default async function handler(req, res) {
     const { id } = req.query;
     try {
       const result = await Question.findByIdAndDelete(id);
+      console.log(result,id)
       if (result.deletedCount === 0) {
         return res.status(404).json({ message: "Question not found" });
       }

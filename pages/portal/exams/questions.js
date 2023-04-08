@@ -1,16 +1,32 @@
 import TopBanner from "../../../client/components/global/TopBanner";
 import useSWR from "swr";
+import axios from "axios";
 import { ActiveLink } from "../../../client/configs/navs";
 
+import { Alert, Snackbar } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-import { useEffect, useState } from "react";
+import { useContext, createContext, useEffect, useState } from "react";
 
+const useLocalAuth = () => {
+  const [auth, setAuth] = useState(null);
+  useEffect(() => {
+    const local = JSON.parse(localStorage.getItem("auth"));
+    if (local) {
+      setAuth(`Bearer ${local.token}`);
+    }
+  }, []);
+  return auth;
+};
+
+// 试题列表
 const QuestionsTable = ({
   questions,
   selectEditTarget,
   setShowTrue,
   handleDeleteQuestion,
+  handleAddQuestion,
 }) => {
   return (
     <div className='h-[600px] w-full table-auto  overflow-y-auto rounded-lg border shadow'>
@@ -23,14 +39,19 @@ const QuestionsTable = ({
             <th className='bg-primary-600 px-4 py-2 text-left font-bold text-white'>
               题目
             </th>
-            <th className='pu-2 bg-primary-600 px-4 text-left font-bold text-white'>
+            <th className='bg-primary-600 py-2 px-4 text-left font-bold text-white'>
               分类
             </th>
-            <th className='pu-2 bg-primary-600 px-4 text-left font-bold text-white'>
+            <th className='bg-primary-600 py-2 px-4 text-left font-bold text-white'>
               类型
             </th>
-            <th className='pu-2 rounded-tr-lg bg-primary-600 px-4 text-center font-bold text-white'>
-              操作
+            <th className='rounded-tr-lg bg-primary-600 py-2 px-4 text-center font-bold text-white'>
+              <button
+                onClick={handleAddQuestion}
+                className='rounded bg-primary-300 px-2 hover:bg-primary-400'>
+                新建题目
+                <AddIcon className='inline-block text-sm' />
+              </button>
             </th>
           </tr>
         </thead>
@@ -44,7 +65,7 @@ const QuestionsTable = ({
               </td>
               <td className='px-4 py-2 text-left'>
                 <span className='rounded-r-lg rounded-l-lg bg-primary-400 px-1 py-1 text-sm font-bold text-white shadow'>
-                  {item.options.filter((item) => item.isCorrect) > 1
+                  {item.options.filter((item) => item.isCorrect).length > 1
                     ? "多选题"
                     : "单选题"}
                 </span>
@@ -79,54 +100,58 @@ const QuestionsTable = ({
   );
 };
 
-const QuestionEdit = ({
-  editTarget,
-  handleAddQuestion,
-  handleSaveQuestion,
-}) => {
-  const [title, setTitle] = useState(editTarget ? editTarget.name : "");
-  const [type, setType] = useState(editTarget ? editTarget.type : "单选题");
-  const [category, setCategory] = useState(
-    editTarget ? editTarget.category : "默认分类",
-  );
-  const [options, setOptions] = useState(
-    editTarget ? editTarget.options : [{ id: 1, content: "", is_answer: true }],
-  );
+// 试题编辑窗口
+const QuestionEdit = ({ editTarget, handleSaveQuestion, setShowFalse }) => {
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [options, setOptions] = useState([
+    { id: 1, content: "", isCorrect: true },
+  ]);
 
   useEffect(() => {
     if (editTarget) {
       setTitle(editTarget.name);
-      setType(editTarget.type);
       setCategory(editTarget.category);
       setOptions(editTarget.options);
     }
   }, [editTarget]);
 
+  // handle for form submit.
   const handleSubmit = (e) => {
     e.preventDefault();
     const question = {
       name: title,
-      type: type,
       category: category,
       options: options,
     };
     if (editTarget) {
       handleSaveQuestion(editTarget.id, question);
     } else {
-      handleAddQuestion(question);
+      throw new Error("未选择 edittarget");
     }
   };
 
+  // handle for form values change.
   const handleAddOption = (e) => {
     e.preventDefault();
     setOptions([
       ...options,
       {
         id: options.length + 1,
-        content: "",
-        is_answer: false,
+        content: "新选项",
+        isCorrect: false,
       },
     ]);
+  };
+
+  const handleDeleteOption = (e, id) => {
+    e.preventDefault();
+    const filterOption = options.filter((item) => item.id !== id);
+    const newOptions = filterOption.map((item, index) => {
+      item.id = index + 1;
+      return item;
+    });
+    setOptions(newOptions);
   };
 
   const handleTitleChange = (e) => {
@@ -136,7 +161,7 @@ const QuestionEdit = ({
     setCategory(e.target.value);
   };
 
-  const handleOptionsChange = (e, id) => {
+  const handleOptionsChange = async (e, id) => {
     const newOptions = options.map((item) => {
       if (item.id === id) {
         return { ...item, content: e.target.value };
@@ -147,26 +172,24 @@ const QuestionEdit = ({
     setOptions(newOptions);
   };
 
-  const handleDeleteOption = (id) => {
-    const newOptions = options.filter((item) => item.id !== id);
+  const handleOptionAnswerChange = (e, id) => {
+    const newOptions = options.map((item) => {
+      if (item.id === id) {
+        return { ...item, isCorrect: e.target.checked };
+      } else {
+        return item;
+      }
+    });
     setOptions(newOptions);
   };
 
+  // view codes
   return (
     <div className='w-full rounded border  p-4 pt-0 shadow'>
       <div className='flex w-full items-center justify-between pb-2'>
         <div className='font-bold italic text-primary-300'>
           #{editTarget ? editTarget.index + 1 : "选择编辑的题目"}
         </div>
-        <button
-          onClick={() => {
-            handleAddQuestion();
-          }}
-          className='group/add items-center rounded-b-md bg-primary-500 p-1 text-white ring-primary-300 drop-shadow hover:ring
-        '>
-          新建题目{" "}
-          <AddCircleIcon className=' rounded-full ring-white group-hover/add:ring' />
-        </button>
       </div>
       <form className='flex w-full flex-col'>
         <div className='mb-2 font-bold text-primary-700 drop-shadow'>
@@ -203,6 +226,9 @@ const QuestionEdit = ({
               <input
                 type='checkbox'
                 className='mx-1 appearance-none overflow-hidden rounded-md border-2 border-primary-300 p-2  checked:border-primary-200 checked:bg-primary-400'
+                checked={item.isCorrect}
+                value={item.isCorrect}
+                onChange={(e) => handleOptionAnswerChange(e, item.id)}
               />
               <input
                 className='block grow  border-primary-500 pl-2 outline-0 placeholder:italic placeholder:text-primary-200'
@@ -213,9 +239,7 @@ const QuestionEdit = ({
               />
               <button
                 className='mr-2 rounded-md px-2 text-primary-400 hover:bg-primary-600 hover:text-white'
-                onClick={() => {
-                  handleDeleteOption(item.id);
-                }}>
+                onClick={(e) => handleDeleteOption(e, item.id)}>
                 删除
               </button>
             </div>
@@ -232,7 +256,10 @@ const QuestionEdit = ({
               保存
             </button>
             <button
-              type='reset'
+              onClick={(e) => {
+                e.preventDefault();
+                setShowFalse();
+              }}
               className='font-bold text-primary-500 hover:text-red-900'>
               取消
             </button>
@@ -244,48 +271,88 @@ const QuestionEdit = ({
 };
 
 const Main = ({}) => {
-  const fetcher = (...args) => fetch(...args).then((res) => res.json());
-  const { data, error, isLoading } = useSWR("/api/v1/questions", fetcher);
-
+  const token = useLocalAuth();
+  const fetcher = async (url) => {
+    const auth = await JSON.parse(localStorage.getItem("auth"));
+    const { token } = auth;
+    return axios
+      .get(url, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.data);
+  };
+  const { data } = useSWR("/api/v1/questions", fetcher);
   const [show, setShow] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [editTarget, setEditTarget] = useState(null);
 
-  const handleAddQuestion = (question) => {
+  const { setAlert } = useContext(AlertContext);
+
+  const handleAddQuestion = async () => {
     const newQuestion = {
       id: questions.length + 1,
-      name: "",
-      category: "",
+      name: "一个创建的新题目",
+      category: "未分类",
       options: [
         {
           id: 1,
-          content: "",
+          content: "试题选项1",
+          isCorrect: false,
+        },
+        {
+          id: 2,
+          content: "试题选项2",
           isCorrect: false,
         },
       ],
     };
-    if (question) {
+    try {
+      const response = await axios.post("/api/v1/questions", newQuestion, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      const { question } = response.data;
       setQuestions([...questions, question]);
-    } else {
-      console.log("questions", questions);
-      setQuestions([...questions, newQuestion]);
+      setAlert("创建成功", "success");
+    } catch (error) {
+      setAlert("创建失败", "error");
     }
   };
 
-  const handleDeleteQuestion = (id) => {
+  const handleDeleteQuestion = async (id) => {
     const newQuestions = questions.filter((item) => item.id !== id);
-    setQuestions(newQuestions);
+    try {
+      const response = await axios.delete(`/api/v1/questions?id=${id}`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      setQuestions(newQuestions);
+      setAlert("删除成功", "success");
+    } catch (error) {
+      setAlert("删除失败", "error");
+    }
   };
 
-  const handleSaveQuestion = (id, question) => {
-    const newQuestions = questions.map((item) => {
-      if (item.id === id) {
-        return question;
-      } else {
-        return item;
-      }
-    });
-    setQuestions(newQuestions);
+  const handleSaveQuestion = async (id, question) => {
+    try {
+      const response = await axios.put(`/api/v1/questions?id=${id}`, question, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      const { question: newQuestion } = response.data;
+      setQuestions(
+        questions.map((item) => {
+          if (item.id === id) {
+            return newQuestion;
+          }
+          return item;
+        }),
+      );
+      setAlert("保存成功", "success");
+    } catch (error) {
+      setAlert("保存失败", "error");
+    }
   };
 
   useEffect(() => {
@@ -294,9 +361,6 @@ const Main = ({}) => {
     }
   }, [data]);
 
-  const toggleShow = () => {
-    setShow(!show);
-  };
   const setShowTrue = () => {
     setShow(true);
   };
@@ -307,9 +371,7 @@ const Main = ({}) => {
 
   const selectEditTarget = (id, index) => {
     const target = questions.find((question) => question.id === id);
-    console.log("target:", target);
     target.index = index;
-    console.log("target with index:", target);
     setEditTarget(target);
   };
 
@@ -321,13 +383,14 @@ const Main = ({}) => {
           questions={questions}
           selectEditTarget={selectEditTarget}
           setShowTrue={setShowTrue}
+          handleAddQuestion={handleAddQuestion}
           handleDeleteQuestion={handleDeleteQuestion}
         />
       </div>
       <div className={`${show ? "xl:col-span-2" : "hidden"} col-span-6`}>
         <QuestionEdit
+          setShowFalse={setShowFalse}
           editTarget={editTarget}
-          handleAddQuestion={handleAddQuestion}
           handleSaveQuestion={handleSaveQuestion}
         />
       </div>
@@ -335,13 +398,59 @@ const Main = ({}) => {
   );
 };
 
+const AlertContext = createContext();
+
+const TopAlert = () => {
+  const { getAlert } = useContext(AlertContext);
+  const { message, severity, show, setAlertFalse } = getAlert();
+  return (
+    <Snackbar
+      open={show}
+      autoHideDuration={3000}
+      onClose={() => {
+        setAlertFalse();
+      }}>
+      <Alert
+        variant='filled'
+        severity={severity}
+        onClose={() => {
+          setAlertFalse();
+        }}>
+        {message}
+      </Alert>
+    </Snackbar>
+  );
+};
+
 const QuestionsView = () => {
+  const [alertShow, setAlertShow] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("success");
+
+  const setAlert = (message, severity) => {
+    setAlertMessage(message);
+    setAlertSeverity(severity);
+    setAlertShow(true);
+  };
+
+  const getAlert = () => {
+    return {
+      message: alertMessage,
+      severity: alertSeverity,
+      show: alertShow,
+      setAlertFalse: () => setAlertShow(false),
+    };
+  };
+
   return (
     <div>
       <TopBanner links={ActiveLink("Admin")} title='题库管理' />
-      <div className='container mx-auto'>
-        <Main />
-      </div>
+      <AlertContext.Provider value={{ setAlert, getAlert }}>
+        <TopAlert />
+        <div className='container mx-auto'>
+          <Main />
+        </div>
+      </AlertContext.Provider>
     </div>
   );
 };
