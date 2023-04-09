@@ -1,13 +1,13 @@
 // pages/api/v1/auth.js
-import dbConnect from "../../../server/utils/dbConnect";
-
 import {
   registerController,
   loginController,
 } from "../../../server/controller/auth";
 
+import { connectToDatabase } from "../../../server/utils/dbConnect";
+
 export default async function authHandler(req, res) {
-  await dbConnect();
+  await connectToDatabase();
   const { method } = req;
 
   switch (method) {

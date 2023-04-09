@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     power: { type: Number },
     exams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Exam" }], // 用户参加的考试
+    avatar: { type: String },
   },
   { timestamps: true },
 );

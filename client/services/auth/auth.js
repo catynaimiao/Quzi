@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 // 未来 全局配置变量
-const BASE_URL = "http://localhost:3001/api/v1/auth"; // api Request URI
+const BASE_URL = "/api/v1/auth"; // api Request URI
 
 export const useAuth = () => {
   const [user, setUser] = useState(undefined);

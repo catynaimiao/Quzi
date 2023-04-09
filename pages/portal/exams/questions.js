@@ -60,11 +60,15 @@ const QuestionsTable = ({
             <tr key={item.id} className='hover:bg-primary-50'>
               <td className='px-4 py-2 text-left'>{index + 1}</td>
               <td className='px-4 py-2 text-left'>{item.name}</td>
-              <td className='px-4 py-2 text-left'>
-                {item.category ? item.category : "无分类"}
+              <td className='px-4 py-2 flex justify-start flex-wrap gap-1 max-w-[180px]'>
+                {item.category
+                  ? item.category
+                      .split(/[,，]/)
+                      .map((item) => <span className="text-sm rounded-l-full rounded-r-full border px-1 bg-primary-300 text-white"  key={item}>{item}</span>)
+                  : "无分类"}
               </td>
               <td className='px-4 py-2 text-left'>
-                <span className='rounded-r-lg rounded-l-lg bg-primary-400 px-1 py-1 text-sm font-bold text-white shadow'>
+                <span className='rounded-r-lg whitespace-nowrap rounded-l-lg bg-primary-400 px-1 py-1 text-sm font-bold text-white shadow'>
                   {item.options.filter((item) => item.isCorrect).length > 1
                     ? "多选题"
                     : "单选题"}
@@ -290,7 +294,7 @@ const Main = ({}) => {
     const newQuestion = {
       id: questions.length + 1,
       name: "一个创建的新题目",
-      category: "未分类",
+      category: "",
       options: [
         {
           id: 1,

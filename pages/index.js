@@ -2,7 +2,7 @@ import Head from "next/head";
 import TopBanner from "../client/components/global/TopBanner";
 import TimgBase from "../client/components/pages/home/TimgBase";
 import timg from "../assets/images/timg.avif";
-import timg2 from "../assets/images/timg.jpg"
+import timg2 from "../assets/images/timg.jpg";
 import { localAuth } from "../client/services/auth/auth";
 import { useEffect, useState } from "react";
 import { ActiveLink } from "../client/configs/navs";
@@ -10,8 +10,10 @@ import { ActiveLink } from "../client/configs/navs";
 const Home = () => {
   const [user, setUser] = useState(undefined);
   useEffect(() => {
-    const { user } = localAuth();
-    setUser(user);
+    let auth = localAuth();
+    if (auth) {
+      setUser(auth.user);
+    }
   }, []);
 
   return (
