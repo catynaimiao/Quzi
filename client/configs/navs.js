@@ -15,21 +15,25 @@ export const Admin_User_Links = [
     href: "/portal/users/users",
     icon: <PeopleIcon />,
   },
+  /*
   {
     id: 2,
     name: "用户组管理",
     href: "/portal/users/groups",
     icon: <GroupsIcon />,
   },
+  */
 ];
 
 export const Admin_Exam_Links = [
+  /*
   {
     id: 1,
     name: "考试管理",
     href: "/portal/exams/exams",
     icon: <ModeIcon />,
   },
+  */
   {
     id: 2,
     name: "试卷管理",

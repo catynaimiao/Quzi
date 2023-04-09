@@ -17,7 +17,6 @@ const useUserLocal = () => {
       setUser(local);
     }
   }, []);
-  console.log(user);
   return user;
 };
 
@@ -82,7 +81,7 @@ const TopBanner = ({ title, links }) => {
             <button className='peer'>
               <AccountCircleIcon className='peer: rounded-full bg-gray-200 text-[42px] text-primary-300' />
             </button>
-            <div className='absolute right-0 z-10 w-32 translate-x-[500px] justify-center rounded  bg-primary-900 opacity-0 transition duration-500 ease-in-out hover:translate-x-0 hover:opacity-100 peer-hover:translate-x-0 peer-hover:opacity-100'>
+            <div className='absolute right-0 z-10 w-32 translate-x-[500px] justify-center rounded  bg-primary-600 opacity-0 transition duration-500 ease-in-out hover:translate-x-0 hover:opacity-100 peer-hover:translate-x-0 peer-hover:opacity-100'>
               {user && (
                 <div className='border-b py-1 text-center text-primary-50'>
                   你好,{user.user.name}

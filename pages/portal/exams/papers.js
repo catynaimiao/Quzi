@@ -1,13 +1,14 @@
 import TopBanner from "../../../client/components/global/TopBanner";
 import { ActiveLink } from "../../../client/configs/navs";
 
+import Link from "next/link";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import AddchartOutlinedIcon from "@mui/icons-material/AddchartOutlined";
 
 const utils_menu_button = [
   {
     icon: <AddBoxOutlinedIcon />,
-    content: "添加试卷",
+    content: "创建考试",
     handler: () => {},
   },
 ];
@@ -33,6 +34,7 @@ const UtilsList = ({ list }) => {
 
 const papers = [
   {
+    id: 1,
     name: "试卷1",
     category: "前端",
     questions: ["id1", "id2"],
@@ -44,6 +46,7 @@ const papers = [
     status: "未发布",
   },
   {
+    id: 2,
     name: "试卷2",
     category: "后端",
     questions: ["id1", "id2"],
@@ -57,14 +60,57 @@ const papers = [
 ];
 
 const PaperCard = ({ paper }) => {
+  const startTime = new Date(paper.startTime);
+  const endTime = new Date(paper.endTime);
+  const showTime =
+    startTime.toTimeString().slice(0, 5) +
+    " - " +
+    endTime.toTimeString().slice(0, 5);
   return (
-    <div className="">
-    </div>
-  )
+    <Link href={`/portal/exams/papers/${paper.id}`}>
+      <div className='group flex rounded-xl bg-primary-50 drop-shadow hover:bg-primary-400'>
+        <div className='w-64'>
+          <div className='text-bas space-y-1 p-4 text-left'>
+            <p className='text-lg font-bold text-primary-800 group-hover:text-primary-50'>
+              {paper.name}
+            </p>
+            <p className='text-lg text-primary-500 group-hover:text-primary-100'>
+              {paper.creator}
+            </p>
+            <div className='font-medium'>
+              <div className='text-sky-500 group-hover:text-sky-200'>
+                {paper.category}
+              </div>
+              <div className='text-slate-700 group-hover:text-slate-200'>
+                {showTime}
+              </div>
+            </div>
+            <div className='flex justify-between text-base '>
+              <p className='text-primary-400 group-hover:text-primary-100'>
+                {paper.status}
+              </p>
+              <p className='text-primary-400 group-hover:text-primary-100'>
+                <span className='font-bold text-primary-500 group-hover:text-primary-50'>
+                  {paper.questions.length}
+                </span>
+                道题
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
 };
 
 const PaperList = () => {
-  return <div></div>;
+  return (
+    <div className='mt-4 flex justify-start gap-4 overflow-scroll'>
+      {papers.map((paper) => (
+        <PaperCard key={paper.id} paper={paper} />
+      ))}
+    </div>
+  );
 };
 
 const Main = () => {
@@ -79,7 +125,7 @@ const Main = () => {
 const PapersView = () => {
   return (
     <div>
-      <TopBanner title='试卷管理' links={ActiveLink("Admin")} />
+      <TopBanner title='考试管理' links={ActiveLink("Admin")} />
       <Main />
     </div>
   );

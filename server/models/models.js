@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    role: { type: String, required: true },
     power: { type: Number },
     exams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Exam" }], // 用户参加的考试
     avatar: { type: String },
@@ -69,6 +70,14 @@ const paperSchema = new Schema(
   },
   { timestamps: true },
 );
+
+// Rename _id to id
+paperSchema.set("toJSON", {
+  transform: (_doc, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+  },
+});
 
 export const Paper =
   mongoose.models.Paper || mongoose.model("Paper", paperSchema);
