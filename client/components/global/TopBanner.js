@@ -26,6 +26,7 @@ const useLogout = () => {
   const logout = () => {
     localStorage.removeItem("auth");
     router.push("/");
+    router.reload();
   };
   return logout;
 };

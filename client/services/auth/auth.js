@@ -6,7 +6,7 @@ const BASE_URL = "/api/v1/auth"; // api Request URI
 export const useAuth = () => {
   const [user, setUser] = useState(undefined);
   useEffect(() => {
-    const { user } = localAuth();
+    const user = localAuth();
     setUser(user);
   }, []);
   return { user };
