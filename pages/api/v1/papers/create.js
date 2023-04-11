@@ -15,6 +15,11 @@ export default async function createPaper(req, res) {
 
   // 获取Authorization头和请求体
   const authHeader = req.headers.authorization;
+  
+  if (!authHeader) {
+    return res.status(401).json({ success: false, error: "Unauthorized." });
+  }
+
   const { name, category, questions, duration, startTime, endTime, status } =
     req.body;
 

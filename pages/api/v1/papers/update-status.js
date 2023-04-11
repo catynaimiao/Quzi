@@ -15,6 +15,11 @@ export default async function updateStatus(req, res) {
   
   // 获取Authorization头和请求参数
   const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ success: false, error: "Unauthorized." });
+  }
+
   const { paperId, status } = req.body;
 
   try {

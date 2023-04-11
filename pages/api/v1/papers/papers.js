@@ -1,20 +1,24 @@
-// pages/api/papers/v1/update-questions.js
+// pages/api/v1/papers/createnew.js
 
 import jwt from "jsonwebtoken";
 import { connectToDatabase } from "../../../../server/utils/dbConnect";
 import { Paper, User } from "../../../../server/models/models";
 
-export default async function updateQuestions(req, res) {
+export default async function createPaper(req, res) {
   await connectToDatabase();
-  
-  // 获取Authorization头和请求参数
+
+  if (req.method !== "GET") {
+    return res
+      .status(400)
+      .json({ success: false, error: "Method not allowed." });
+  }
+
+  // 获取Authorization头和请求体
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
     return res.status(401).json({ success: false, error: "Unauthorized." });
   }
-
-  const { paperId, questions } = req.body;
 
   try {
     // 验证JWT令牌并检查用户权限
@@ -25,20 +29,22 @@ export default async function updateQuestions(req, res) {
       throw new Error("You do not have permission to perform this action.");
     }
 
-    // 更新试卷的试题
-    const paper = await Paper.findByIdAndUpdate(
-      paperId,
-      { questions, modifier: user.id },
-      { new: true },
-    );
+    const papers = await Paper.find({ creator: user.id }).populate(['creator']);
 
-    // 如果试卷不存在，则抛出错误
-    if (!paper) {
-      throw new Error("Paper not found.");
-    }
+    const data  = papers.map((paper) => {
+        return {
+            id: paper._id,
+            name: paper.name,
+            status: paper.status,
+            questions: paper.questions,
+            creator: paper.creator.name,
+            startTime: paper.startTime,
+            endTime: paper.endTime,
+        }
+    })
 
     // 返回成功响应
-    res.status(200).json({ success: true, data: paper });
+    res.status(200).json({ success: true, data: data });
   } catch (error) {
     // 返回错误响应
     res.status(400).json({ success: false, error: error.message });

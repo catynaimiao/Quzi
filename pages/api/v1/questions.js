@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 // beartoken parse and auth in nextjs
 const tokenparse = async (req, res) => {
   const { authorization } = req.headers;
+
   if (authorization) {
     const token = authorization.split(" ")[1];
     if (token) {

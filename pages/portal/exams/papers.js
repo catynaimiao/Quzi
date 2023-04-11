@@ -1,17 +1,12 @@
 import TopBanner from "../../../client/components/global/TopBanner";
 import { ActiveLink } from "../../../client/configs/navs";
 
+import useSWR from "swr";
 import Link from "next/link";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import AddchartOutlinedIcon from "@mui/icons-material/AddchartOutlined";
-
-const utils_menu_button = [
-  {
-    icon: <AddBoxOutlinedIcon />,
-    content: "创建考试",
-    handler: () => {},
-  },
-];
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const UtilsList = ({ list }) => {
   return (
@@ -31,33 +26,6 @@ const UtilsList = ({ list }) => {
     </div>
   );
 };
-
-const papers = [
-  {
-    id: 1,
-    name: "试卷1",
-    category: "前端",
-    questions: ["id1", "id2"],
-    creator: "id1",
-    modifier: "id1",
-    duration: 120,
-    startTime: "2021-10-10",
-    endTime: "2021-10-10",
-    status: "未发布",
-  },
-  {
-    id: 2,
-    name: "试卷2",
-    category: "后端",
-    questions: ["id1", "id2"],
-    creator: "id1",
-    modifier: "id1",
-    duration: 120,
-    startTime: "2021-10-10",
-    endTime: "2021-10-10",
-    status: "未发布",
-  },
-];
 
 const PaperCard = ({ paper }) => {
   const startTime = new Date(paper.startTime);
@@ -103,9 +71,9 @@ const PaperCard = ({ paper }) => {
   );
 };
 
-const PaperList = () => {
+const PaperList = ({ papers }) => {
   return (
-    <div className='mt-4 flex justify-start gap-4 overflow-scroll'>
+    <div className='mt-4 py-4 flex justify-start gap-4 overflow-scroll'>
       {papers.map((paper) => (
         <PaperCard key={paper.id} paper={paper} />
       ))}
@@ -114,10 +82,48 @@ const PaperList = () => {
 };
 
 const Main = () => {
+  const fetcher = async (url) => {
+    const auth = await JSON.parse(localStorage.getItem("auth"));
+    const { token } = auth;
+    return axios
+      .get(url, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.data);
+  };
+  const { data } = useSWR("/api/v1/papers/papers", fetcher);
+
+  const [papers, setPapers] = useState([]);
+
+  useEffect(() => {
+    if (data) {
+      setPapers(data.data);
+    }
+  }, [data]);
+
+  const utils_menu_button = [
+    {
+      icon: <AddBoxOutlinedIcon />,
+      content: "创建考试",
+      handler: async () => {
+        const auth = await JSON.parse(localStorage.getItem("auth"));
+        const { token } = auth;
+        const newPaper = await axios.post(
+          "/api/v1/papers/createnew",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        setPapers([...papers, newPaper.data.data]);
+      },
+    },
+  ];
+
   return (
     <div className='mx-auto md:container'>
       <UtilsList list={utils_menu_button} />
-      <PaperList />
+      {data && <PaperList papers={papers} />}
     </div>
   );
 };
