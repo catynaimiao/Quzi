@@ -60,15 +60,19 @@ const QuestionsTable = ({
             <tr key={item.id} className='hover:bg-primary-50'>
               <td className='px-4 py-2 text-left'>{index + 1}</td>
               <td className='px-4 py-2 text-left'>{item.name}</td>
-              <td className='px-4 py-2 flex justify-start flex-wrap gap-1 max-w-[180px]'>
+              <td className='flex max-w-[180px] flex-wrap justify-start gap-1 px-4 py-2'>
                 {item.category
-                  ? item.category
-                      .split(/[,，]/)
-                      .map((item) => <span className="text-sm rounded-l-full rounded-r-full border px-1 bg-primary-300 text-white"  key={item}>{item}</span>)
+                  ? item.category.split(/[,，]/).map((item) => (
+                      <span
+                        className='rounded-l-full rounded-r-full border bg-primary-300 px-1 text-sm text-white'
+                        key={item}>
+                        {item}
+                      </span>
+                    ))
                   : "无分类"}
               </td>
               <td className='px-4 py-2 text-left'>
-                <span className='rounded-r-lg whitespace-nowrap rounded-l-lg bg-primary-400 px-1 py-1 text-sm font-bold text-white shadow'>
+                <span className='whitespace-nowrap rounded-r-lg rounded-l-lg bg-primary-400 px-1 py-1 text-sm font-bold text-white shadow'>
                   {item.options.filter((item) => item.isCorrect).length > 1
                     ? "多选题"
                     : "单选题"}
@@ -124,12 +128,13 @@ const QuestionEdit = ({ editTarget, handleSaveQuestion, setShowFalse }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const question = {
+      id: editTarget.id,
       name: title,
       category: category,
       options: options,
     };
     if (editTarget) {
-      handleSaveQuestion(editTarget.id, question);
+      handleSaveQuestion(question);
     } else {
       throw new Error("未选择 edittarget");
     }
@@ -337,9 +342,9 @@ const Main = ({}) => {
     }
   };
 
-  const handleSaveQuestion = async (id, question) => {
+  const handleSaveQuestion = async (question) => {
     try {
-      const response = await axios.put(`/api/v1/questions?id=${id}`, question, {
+      const response = await axios.put(`/api/v1/questions`, question, {
         headers: {
           Authorization: token,
         },
@@ -347,7 +352,7 @@ const Main = ({}) => {
       const { question: newQuestion } = response.data;
       setQuestions(
         questions.map((item) => {
-          if (item.id === id) {
+          if (item.id === question.id) {
             return newQuestion;
           }
           return item;

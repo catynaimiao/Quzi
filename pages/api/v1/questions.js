@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ message: "Not authorized" });
   }
 
-  console.log(user)
+  console.log(user);
   const ExistedUser = await User.findOne({ id: user.id });
   if (!ExistedUser) {
     return res.status(401).json({ message: "Not authorized" });
@@ -56,7 +56,8 @@ export default async function handler(req, res) {
     // Update an existing question
     const { id, name, options, category } = req.body;
     try {
-      const question = await Question.findOne({ id });
+      console.log(req.params)
+      const question = await Question.findById(id);
       if (!question) {
         return res.status(404).json({ message: "Question not found" });
       }
