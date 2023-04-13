@@ -36,9 +36,6 @@ export default async function createPaper(req, res) {
       questions: [],
       creator: user.id,
       modifier: user.id,
-      duration: 120,
-      startTime: new Date(),
-      endTime: new Date(),
       status: "未发布",
     });
     await paper.save();
@@ -49,8 +46,6 @@ export default async function createPaper(req, res) {
       status: paper.status,
       questions: paper.questions,
       creator: userData.name,
-      startTime: paper.startTime,
-      endTime: paper.endTime,
     };
 
     // 返回成功响应

@@ -28,29 +28,20 @@ const UtilsList = ({ list }) => {
 };
 
 const PaperCard = ({ paper }) => {
-  const startTime = new Date(paper.startTime);
-  const endTime = new Date(paper.endTime);
-  const showTime =
-    startTime.toTimeString().slice(0, 5) +
-    " - " +
-    endTime.toTimeString().slice(0, 5);
   return (
     <Link href={`/portal/exams/papers/${paper.id}`}>
       <div className='group flex rounded-xl bg-primary-50 drop-shadow hover:bg-primary-400'>
         <div className='w-64'>
           <div className='text-bas space-y-1 p-4 text-left'>
             <p className='text-lg font-bold text-primary-800 group-hover:text-primary-50'>
-              {paper.name}
+              {paper.name ? paper.name : "未命名"}
             </p>
             <p className='text-lg text-primary-500 group-hover:text-primary-100'>
               {paper.creator}
             </p>
             <div className='font-medium'>
-              <div className='text-sky-500 group-hover:text-sky-200'>
-                {paper.category}
-              </div>
-              <div className='text-slate-700 group-hover:text-slate-200'>
-                {showTime}
+              <div className='font-bold text-sky-500 group-hover:text-sky-200'>
+                {paper.category ? paper.category : "未分类"}
               </div>
             </div>
             <div className='flex justify-between text-base '>
@@ -73,7 +64,7 @@ const PaperCard = ({ paper }) => {
 
 const PaperList = ({ papers }) => {
   return (
-    <div className='mt-4 py-4 flex justify-start gap-4 overflow-scroll'>
+    <div className='mt-4 flex justify-start gap-4 overflow-scroll py-4'>
       {papers.map((paper) => (
         <PaperCard key={paper.id} paper={paper} />
       ))}

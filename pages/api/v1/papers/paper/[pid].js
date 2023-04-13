@@ -34,6 +34,7 @@ export default async function handler(req, res) {
         id: paper._id,
         name: paper.name,
         status: paper.status,
+        category: paper.category,
         questions: paper.questions.map((question) => {
           return {
             id: question._id,
@@ -43,12 +44,22 @@ export default async function handler(req, res) {
           };
         }),
         creator: paper.creator.name,
-        startTime: paper.startTime,
-        endTime: paper.endTime,
       };
 
       // 返回成功响应
       res.status(200).json({ success: true, data: data });
+    }
+
+    if (req.method === "PUT") {
+      await Paper.findByIdAndUpdate(pid, req.body);
+      const response = await Paper.findById(pid).populate("questions");
+
+      res.status(200).json({ success: true, data: response });
+    }
+
+    if (req.method === "DELETE") {
+      await Paper.findByIdAndDelete(pid);
+      res.status(200).json({ success: true, data: "this is delete" });
     }
 
     if (req.method === "POST") {

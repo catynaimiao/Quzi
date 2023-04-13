@@ -39,9 +39,6 @@ export default async function createPaper(req, res) {
       questions,
       creator: user.id,
       modifier: user.id,
-      duration,
-      startTime,
-      endTime,
       status,
     });
     await paper.save();

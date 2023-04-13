@@ -36,10 +36,9 @@ export default async function createPaper(req, res) {
             id: paper._id,
             name: paper.name,
             status: paper.status,
+            category: paper.category,
             questions: paper.questions,
             creator: paper.creator.name,
-            startTime: paper.startTime,
-            endTime: paper.endTime,
         }
     })
 

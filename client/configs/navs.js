@@ -26,14 +26,12 @@ export const Admin_User_Links = [
 ];
 
 export const Admin_Exam_Links = [
-  /*
   {
     id: 1,
     name: "考试管理",
     href: "/portal/exams/exams",
     icon: <ModeIcon />,
   },
-  */
   {
     id: 2,
     name: "试卷管理",
@@ -47,7 +45,6 @@ export const Admin_Exam_Links = [
     icon: <SubjectIcon />,
   },
 ];
-
 
 export const SelectedAdminSliderList = (selected) => {
   return AdminSliderList.map((item) => {
