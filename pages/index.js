@@ -1,53 +1,33 @@
-import { Typography, Stack, Box, Button } from "@mui/material";
 import Head from "next/head";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Link from "next/link";
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#122c34",
-      darker: "#398EA7",
-    },
-  },
-});
+import TopBanner from "../client/components/global/TopBanner";
+import TimgBase from "../client/components/pages/home/TimgBase";
+import timg from "../assets/images/timg.avif";
+import timg2 from "../assets/images/timg.jpg";
+import { localAuth } from "../client/services/auth/auth";
+import { useEffect, useState } from "react";
+import { ActiveLink } from "../client/configs/navs";
 
 const Home = () => {
+  const [user, setUser] = useState(undefined);
+  useEffect(() => {
+    let auth = localAuth();
+    if (auth) {
+      setUser(auth.user);
+    }
+  }, []);
+
   return (
     <>
       <Head>
-        <title>QuizExam</title>
+        <title>QuziExam 考试系统</title>
       </Head>
-      <ThemeProvider theme={theme}>
-        <Box
-          sx={{
-            p: 8,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
-          <Stack spacing={2}>
-            <Typography variant='h2' component='h2'>
-              QuizExam
-            </Typography>
-            <Typography variant='h2' component='p'>
-              内部考试考试系统
-            </Typography>
-            <Box>
-              <Link href='/user/register'>
-                <Button variant='contained' size='large'>
-                  快速注册
-                </Button>
-              </Link>
-              <Link href='/user/login'>
-                <Button variant='contained' size='large' sx={{ ml: 1 }}>
-                  快速登录
-                </Button>
-              </Link>
-            </Box>
-          </Stack>
-        </Box>
-      </ThemeProvider>
+      <TopBanner links={ActiveLink("Home")} title={"考试系统"} />
+      <TimgBase
+        imagSrc={timg2}
+        title='考试系统'
+        subtitle='这个系统很牛逼,全球第一牛逼'
+        user={user}
+      />
     </>
   );
 };
