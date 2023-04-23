@@ -1,12 +1,12 @@
+import axios from "axios";
 import TopBanner from "../../../client/components/global/TopBanner";
 import { ActiveLink } from "../../../client/configs/navs";
 
-import useSWR from "swr";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
-import AddchartOutlinedIcon from "@mui/icons-material/AddchartOutlined";
-import axios from "axios";
-import { useEffect, useState } from "react";
+
+import Link from "next/link";
 
 const UtilsList = ({ list }) => {
   return (
@@ -24,10 +24,11 @@ const UtilsList = ({ list }) => {
         </button>
       ))}
     </div>
+      
   );
 };
 
-const PaperCard = ({ paper }) => {
+const QuziCard = ({ quiz }) => {
   return (
     <Link href={`/portal/exams/papers/${paper.id}`}>
       <div className='group flex rounded-xl bg-primary-50 drop-shadow hover:bg-primary-400'>
@@ -62,70 +63,54 @@ const PaperCard = ({ paper }) => {
   );
 };
 
-const PaperList = ({ papers }) => {
+const QuziList = ({ quizs }) => {
   return (
     <div className='mt-4 flex justify-start gap-4 overflow-scroll py-4'>
-      {papers.map((paper) => (
-        <PaperCard key={paper.id} paper={paper} />
+      {quizs.map((quiz) => (
+        <QuziCard key={quzi.id} paper={quzi} />
       ))}
     </div>
   );
 };
 
 const Main = () => {
-  const fetcher = async (url) => {
-    const auth = await JSON.parse(localStorage.getItem("auth"));
-    const { token } = auth;
-    return axios
-      .get(url, { headers: { Authorization: `Bearer ${token}` } })
-      .then((res) => res.data);
-  };
-  const { data } = useSWR("/api/v1/papers/papers", fetcher);
+  const [quizs, setQuizs] = useState([]);
 
-  const [papers, setPapers] = useState([]);
-
-  useEffect(() => {
-    if (data) {
-      setPapers(data.data);
-    }
-  }, [data]);
-
-  const utils_menu_button = [
+  const button_list = [
     {
       icon: <AddBoxOutlinedIcon />,
-      content: "创建试卷",
+      content: "安排考试",
       handler: async () => {
         const auth = await JSON.parse(localStorage.getItem("auth"));
         const { token } = auth;
-        const newPaper = await axios.post(
-          "/api/v1/papers/createnew",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        console.log(token);
+        const res = await axios.post("/api/v1/quizs/quizs", null, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
-        setPapers([...papers, newPaper.data.data]);
+        });
+        const { data } = res;
+        if (data.status === "success") {
+          setQuizs([...quizs, data.data]);
+        }
       },
-    },
+    }
   ];
 
   return (
     <div className='mx-auto md:container'>
-      <UtilsList list={utils_menu_button} />
-      {data && <PaperList papers={papers} />}
+      <UtilsList list={button_list} />
     </div>
   );
 };
 
-const PapersView = () => {
+const ExamsView = () => {
   return (
     <div>
-      <TopBanner title='试卷管理' links={ActiveLink("Admin")} />
+      <TopBanner title='考试管理' links={ActiveLink("Admin")} />
       <Main />
     </div>
   );
 };
 
-export default PapersView;
+export default ExamsView;

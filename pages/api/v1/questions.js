@@ -1,5 +1,5 @@
 import { connectToDatabase } from "../../../server/utils/dbConnect";
-import { Question, User } from "../../../server/models/models";
+import { Question, User, Paper } from "../../../server/models/models";
 import jwt from "jsonwebtoken";
 
 // beartoken parse and auth in nextjs
@@ -75,9 +75,13 @@ export default async function handler(req, res) {
     const { id } = req.query;
     try {
       const result = await Question.findByIdAndDelete(id);
+
       if (result.deletedCount === 0) {
         return res.status(404).json({ message: "Question not found" });
       }
+
+      await Paper.updateMany({ questions: id }, { $pull: { questions: id } });
+
       res.status(200).json({ message: "Question deleted" });
     } catch (err) {
       res

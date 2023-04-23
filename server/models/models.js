@@ -77,3 +77,84 @@ paperSchema.set("toJSON", {
 
 export const Paper =
   mongoose.models.Paper || mongoose.model("Paper", paperSchema);
+
+// 考试模式
+const quizSchema = new Schema(
+  {
+    name: { type: String, required: true, maxlength: 30 },
+    paper: { type: Schema.Types.ObjectId, ref: "Paper" },
+    user: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    endTime: { type: Date },
+    duration: { type: Number },
+    status: { type: String, default: "编辑中" },
+    startTime: { type: Date },
+    creator: { type: Schema.Types.ObjectId, ref: "User", required: true }, // 试卷的创建者
+    modifier: { type: Schema.Types.ObjectId, ref: "User", required: true }, // 试卷的修改者
+  },
+  { timestamps: true },
+);
+
+quizSchema.set("toJSON", {
+  transform: (_doc, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+  },
+});
+
+export const Quiz = mongoose.models.Quiz || mongoose.model("Quiz", quizSchema);
+
+// 考试结果模式
+const resultSchema = new Schema(
+  {
+    quiz: { type: Schema.Types.ObjectId, ref: "Quiz", required: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    answers: [
+      {
+        question: {
+          type: Schema.Types.ObjectId,
+          ref: "Question",
+          required: true,
+        },
+        answer: { type: Number, required: true },
+      },
+    ],
+    score: { type: Number, required: true },
+  },
+  { timestamps: true },
+);
+
+resultSchema.index({ quiz: 1, user: 1 }, { unique: true });
+
+resultSchema.set("toJSON", {
+  transform: (_doc, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+  },
+});
+
+export const Result =
+  mongoose.models.Result || mongoose.model("Result", resultSchema);
+
+// 参加考试模式
+const examSchema = new Schema(
+  {
+    quiz: { type: Schema.Types.ObjectId, ref: "Quiz", required: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    startTime: { type: Date, required: true },
+    endTime: { type: Date, required: true },
+    duration: { type: Number, required: true },
+    status: { type: String, default: "assigned" },
+  },
+  { timestamps: true },
+);
+
+examSchema.index({ quiz: 1, user: 1 }, { unique: true });
+
+examSchema.set("toJSON", {
+  transform: (_doc, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+  },
+});
+
+export const Exam = mongoose.models.Exam || mongoose.model("Exam", examSchema);

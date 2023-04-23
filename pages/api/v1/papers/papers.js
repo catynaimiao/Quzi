@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { connectToDatabase } from "../../../../server/utils/dbConnect";
 import { Paper, User } from "../../../../server/models/models";
 
-export default async function createPaper(req, res) {
+export default async function paperHandler(req, res) {
   await connectToDatabase();
 
   if (req.method !== "GET") {

@@ -32,7 +32,7 @@ export default async function createPaper(req, res) {
     // 创建试卷
     const paper = new Paper({
       name: "新试卷",
-      category: "",
+      category: "未分类",
       questions: [],
       creator: user.id,
       modifier: user.id,
